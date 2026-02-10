@@ -18,7 +18,7 @@ fi
 
 FOLDER="~/git/borne_arcade"
 
-if [-d "$FOLDER"]; then
+if [ -d "$FOLDER" ]; then
    cd $FOLDER
    echo "nettoyage des répertoires"
    echo "Veuillez patienter"
