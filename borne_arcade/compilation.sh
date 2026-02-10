@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ -d "~/git/MG2D" ]; then
+if [ -d "$HOME/git/MG2D" ]; then
    echo "MG2D folder exists in user’s home."
-   DEPENDENCIES="~/git/MG2D/"
+   DEPENDENCIES="$HOME/git/MG2D/"
 else
    if [ -f "../MG2D.jar" ]; then
       echo "MG2D.jar exists."
@@ -17,7 +17,7 @@ fi
 if [ -n "$DEPENDENCIES" ]; then
    echo "Compilation du menu de la borne d'arcade"
    echo "Veuillez patienter"
-   javac -cp .:$FOLDER *.java
+   javac -cp .:"$DEPENDENCIES" *.java
 
    cd projet
 
@@ -27,7 +27,7 @@ if [ -n "$DEPENDENCIES" ]; then
        cd $i
        echo "Compilation du jeu "$i
        echo "Veuillez patienter"
-       javac -cp .:../..:$FOLDER *.java
+       javac -cp .:../..:"$DEPENDENCIES" *.java
        cd ..
    done
 fi

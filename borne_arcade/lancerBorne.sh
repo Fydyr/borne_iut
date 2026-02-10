@@ -2,9 +2,9 @@
 
 setxkbmap borne
 
-if [ -d "~/git/MG2D" ]; then
+if [ -d "$HOME/git/MG2D" ]; then
    echo "MG2D folder exists in user’s home."
-   DEPENDENCIES="~/git/MG2D/"
+   DEPENDENCIES="$HOME/git/MG2D/"
 else
    if [ -f "../MG2D.jar" ]; then
       echo "MG2D.jar exists."
@@ -28,7 +28,7 @@ echo "Lancement du  Menu"
 echo "Veuillez patienter"
 
 if [ -n "$DEPENDENCIES" ]; then
-   java -cp .:$DEPENDENCIES Main
+   java -cp .:"$DEPENDENCIES" Main
 fi
 
 ./clean.sh
