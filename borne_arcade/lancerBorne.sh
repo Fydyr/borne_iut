@@ -2,34 +2,27 @@
 
 setxkbmap borne
 
-
-if [ -f "../MG2D.jar" ]; then
-   echo "MG2D.jar exists."
-   DEPENDENCIES="../MG2D.jar"
+if [ -d "~/git/MG2D" ]; then
+   echo "MG2D folder exists in user’s home."
+   DEPENDENCIES="~/git/MG2D/"
 else
-   if [ -d "~/git/MG2D" ]; then
-      echo "MG2D folder exists in user’s home."
-      DEPENDENCIES="~/git/MG2D/"
+   if [ -f "../MG2D.jar" ]; then
+      echo "MG2D.jar exists."
+      DEPENDENCIES="../MG2D.jar"
    else
       echo "No MG2D dependency found"
 	DEPENDENCIES=null
    fi
 fi
 
-FOLDER="~/git/borne_arcade"
+FOLDER=$(dirname "$0")
 
-if [ -d "$FOLDER" ]; then
-   cd $FOLDER
-   echo "nettoyage des répertoires"
-   echo "Veuillez patienter"
-   ./clean.sh
-   ./compilation.sh
-else
-   echo "Aucun dossier $FOLDER trouve, creation du dossier"
-   mkdir -p $FOLDER
-   cd $FOLDER
-   ./compilation.sh
-fi
+
+cd $FOLDER
+echo "nettoyage des répertoires"
+echo "Veuillez patienter"
+./clean.sh
+./compilation.sh
 
 echo "Lancement du  Menu"
 echo "Veuillez patienter"
