@@ -5,7 +5,7 @@ setxkbmap borne
 
 if [ -f "../MG2D.jar" ]; then
    echo "MG2D.jar exists."
-   DEPENDENCIES="../"
+   DEPENDENCIES="../MG2D.jar"
 else
    if [ -d "~/git/MG2D" ]; then
       echo "MG2D folder exists in user’s home."
@@ -25,7 +25,7 @@ if [-d "$FOLDER"]; then
    ./clean.sh
    ./compilation.sh
 else
-   echo "Aucun dossier $FOLDER trouvé, création du dossier"
+   echo "Aucun dossier $FOLDER trouve, creation du dossier"
    mkdir -p $FOLDER
    cd $FOLDER
    ./compilation.sh

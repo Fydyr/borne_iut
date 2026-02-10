@@ -2,7 +2,7 @@
 
 if [ -f "../MG2D.jar" ]; then
    echo "MG2D.jar exists."
-   DEPENDENCIES="../"
+   DEPENDENCIES="../MG2D.jar"
 else
    if [ -d "~/git/MG2D" ]; then
       echo "MG2D folder exists in user’s home."
