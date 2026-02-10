@@ -39,4 +39,4 @@ do
     sleep 1
 done
 
-sudo halt
+# sudo halt
