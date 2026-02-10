@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 if [ -d "~/git/MG2D" ]; then
    echo "MG2D folder exists in user’s home."
