@@ -1,6 +1,3 @@
-# Documentation generee par Doxygen
-docs/generated/
-
 # Java
 *.class
 *.jar
