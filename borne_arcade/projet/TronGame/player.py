@@ -10,6 +10,8 @@ from direction import Direction
 from config import *
 
 class Player:
+    """Represente un joueur dans le jeu Tron avec sa position, sa trainee et ses controles."""
+
     def __init__(self, x, y, color, glow_color, controls=None, move_delay=None):
         self.positions = [(x, y)]  # Historique des positions (la traînée)
         self.direction = Direction.RIGHT  # Direction initiale

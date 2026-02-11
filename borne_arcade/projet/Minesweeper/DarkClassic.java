@@ -1,3 +1,7 @@
+/**
+ * Theme classique sombre du Demineur.
+ * Fournit les chemins vers les images du theme sombre.
+ */
 public class DarkClassic implements Theme {
 
     public DarkClassic() {

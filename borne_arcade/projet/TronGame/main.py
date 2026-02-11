@@ -17,6 +17,8 @@ pygame.init()
 pygame.mixer.init()  # Pour les effets sonores et musiques
 
 class TronGame:
+    """Classe principale du jeu Tron gerant la boucle de jeu et les transitions entre les etats."""
+
     def __init__(self):
         global SCREEN_WIDTH, SCREEN_HEIGHT
         
@@ -70,6 +72,7 @@ class TronGame:
         pass
 
     def run(self):
+        """Lance la boucle principale du jeu et gere les evenements, mises a jour et le rendu."""
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -135,6 +138,11 @@ class TronGame:
             self.clock.tick(FPS)
 
     def process_menu_action(self, action):
+        """Traite l'action selectionnee dans le menu principal.
+
+        Args:
+            action: identifiant de l'action du menu (single_player, two_players, options, quit)
+        """
         if action == "single_player":
             self.game = Game(self.screen, mode="single", difficulty=self.difficulty, move_delay=self.move_delay)
             self.play_music("./assets/sounds/music_game.wav")

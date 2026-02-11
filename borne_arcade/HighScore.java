@@ -8,8 +8,20 @@ import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+/**
+ * Gestion des meilleurs scores (highscores) de la borne d'arcade.
+ * Fournit l'interface graphique de saisie du nom du joueur (3 caractères)
+ * et la persistance des scores dans un fichier texte.
+ * Le format du fichier est une ligne par score : {@code NOM-SCORE}
+ * (ex: "ABC-1500"), trié par score décroissant, limité à 10 entrées.
+ */
 class HighScore{
 
+    /**
+     * Retourne le caractère suivant dans la séquence de saisie (A-Z, '.', ' ').
+     * @param c le caractère actuel
+     * @return le caractère suivant dans le cycle
+     */
     public static char suivant(char c){
 	if(c>='A' && c<'Z')
 	    return (char)(c+1);
@@ -20,6 +32,11 @@ class HighScore{
 	return 'A';
     }
 
+    /**
+     * Retourne le caractère précédent dans la séquence de saisie (A-Z, '.', ' ').
+     * @param c le caractère actuel
+     * @return le caractère précédent dans le cycle
+     */
     public static char precedent(char c){
 	if(c>'A' && c<='Z')
 	    return (char)(c-1);
@@ -30,6 +47,17 @@ class HighScore{
 	return 'Z';
     }
 
+    /**
+     * Affiche l'écran de saisie du nom et enregistre le score.
+     * Le joueur choisit 3 caractères avec le joystick (haut/bas pour changer
+     * la lettre, gauche/droite pour se déplacer, bouton A pour valider).
+     * Le score est inséré à la bonne position dans le fichier de highscores.
+     * @param f la fenêtre MG2D dans laquelle afficher l'écran de saisie
+     * @param clavier le gestionnaire d'entrées clavier de la borne
+     * @param t texture de fond optionnelle (peut être null)
+     * @param s le score obtenu par le joueur
+     * @param fichierHighScore chemin vers le fichier de highscores du jeu
+     */
     public static void demanderEnregistrerNom(Fenetre f, ClavierBorneArcade clavier, Texture t, int s, String fichierHighScore){
 
 	ArrayList<LigneHighScore> list = lireFichier(fichierHighScore);
@@ -199,6 +227,11 @@ class HighScore{
 	System.exit(0);
     }
 
+    /**
+     * Lit un fichier de highscores et retourne la liste des entrées.
+     * @param fichier chemin vers le fichier de highscores
+     * @return liste des lignes de highscore, triées par score décroissant
+     */
     public static ArrayList<LigneHighScore> lireFichier(String fichier){
 	ArrayList<LigneHighScore> l = new ArrayList<LigneHighScore>();
 
@@ -214,6 +247,15 @@ class HighScore{
 	return l;
     }
 
+    /**
+     * Insère un nouveau score dans la liste et sauvegarde le fichier.
+     * Le score est inséré à la position appropriée (tri décroissant).
+     * La liste est tronquée à 10 entrées maximum.
+     * @param fichier chemin vers le fichier de highscores
+     * @param list liste actuelle des highscores
+     * @param nom nom du joueur (3 caractères)
+     * @param score le score obtenu
+     */
     public static void enregistrerFichier(String fichier, ArrayList<LigneHighScore> list, String nom, int score){
 	int position=0;
 	boolean fin = false;

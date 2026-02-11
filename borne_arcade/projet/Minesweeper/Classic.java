@@ -1,3 +1,7 @@
+/**
+ * Theme classique du Demineur.
+ * Fournit les chemins vers les images du theme classique.
+ */
 public class Classic implements Theme {
 
     public Classic() {

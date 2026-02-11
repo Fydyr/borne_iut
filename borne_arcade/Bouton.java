@@ -12,6 +12,13 @@ import MG2D.geometrie.Point;
 import MG2D.geometrie.Texture;
 import MG2D.geometrie.Texte;
 
+/**
+ * Représente un bouton dans la liste de sélection du menu.
+ * Chaque bouton correspond à un jeu disponible et contient son nom,
+ * son chemin sur le disque, sa texture d'arrière-plan et son texte affiché.
+ * La méthode statique {@link #remplirBouton()} scanne le répertoire {@code projet/}
+ * pour créer automatiquement un bouton par jeu détecté.
+ */
 public class Bouton {
     private Texte texte;
     private String chemin;
@@ -20,6 +27,7 @@ public class Bouton {
     private int numeroDeJeu;
 
 
+    /** Constructeur par défaut. Tous les attributs sont initialisés à null. */
     public Bouton(){
 	this.texte = null;
 	this.texture = null;
@@ -27,6 +35,13 @@ public class Bouton {
 	this.nom = null;
     }
 
+    /**
+     * Construit un bouton avec tous ses attributs.
+     * @param texte le texte MG2D affiché sur le bouton
+     * @param texture la texture d'arrière-plan du bouton
+     * @param chemin le chemin vers le répertoire du jeu
+     * @param nom le nom du jeu
+     */
     public Bouton(Texte texte, Texture texture, String chemin, String nom){
 	this.texte = texte;
 	this.texture = texture;
@@ -34,6 +49,11 @@ public class Bouton {
 	this.nom = nom;
     }
 
+    /**
+     * Scanne le répertoire {@code projet/} et crée un bouton pour chaque
+     * sous-répertoire trouvé (chaque jeu). Les boutons sont stockés
+     * dans {@link Graphique#tableau}.
+     */
     public static void remplirBouton(){
 	for(int i = 0 ; i < Graphique.tableau.length ; i++){
 	    Graphique.tableau[i] = new Bouton();

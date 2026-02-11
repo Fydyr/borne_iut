@@ -7,12 +7,24 @@ import MG2D.geometrie.Triangle;
 import MG2D.Clavier;
 
 
+/**
+ * Curseur de sélection dans le menu principal.
+ * Affiche deux étoiles et un rectangle de sélection autour du jeu
+ * actuellement pointé. Gère également le lancement du jeu sélectionné
+ * via l'exécution du script shell correspondant.
+ */
 public class Pointeur {
+    /** Indice du jeu actuellement sélectionné dans {@link Graphique#tableau}. */
     private int value;
     private Texture triangleGauche;
     private Texture triangleDroite;
     private Texture rectangleCentre;
 
+    /**
+     * Construit le pointeur de sélection avec ses éléments graphiques
+     * (étoiles gauche/droite et rectangle de surbrillance).
+     * Positionné initialement sur le dernier jeu de la liste.
+     */
     public Pointeur(){
 	this.triangleGauche = new Texture("img/star.png", new Point(30, 492), 40,40);
 	// this.triangleDroite = new Triangle(Couleur .ROUGE, new Point(550, 560), new Point(520, 510), new Point(550, 460), true);
@@ -21,6 +33,12 @@ public class Pointeur {
 	this.value = Graphique.tableau.length-1;
     }
 
+    /**
+     * Lance le jeu sélectionné lorsque le bouton A du joueur 1 est pressé.
+     * Arrête la musique de fond, exécute le script shell du jeu
+     * ({@code <nomDuJeu>.sh}), attend sa terminaison, puis relance la musique.
+     * @param clavier le gestionnaire d'entrées clavier de la borne
+     */
     public void lancerJeu(ClavierBorneArcade clavier){
 	if(clavier.getBoutonJ1ATape()){
 

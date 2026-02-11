@@ -2,6 +2,10 @@ import MG2D.geometrie.Point;
 import MG2D.geometrie.Rectangle;
 import MG2D.geometrie.Texture;
 
+/**
+ * Represente une case contenant une bombe dans le Demineur.
+ * Implemente l'interface {@link Tile} pour gerer l'affichage et les interactions.
+ */
 public class Bomb implements Tile {
     /* Attributes */
     private boolean masked;

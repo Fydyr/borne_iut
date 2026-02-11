@@ -11,6 +11,8 @@ from option_item import OptionItem
 from config import *
 
 class Options:
+    """Menu des options du jeu Tron permettant de configurer la difficulte, la vitesse et le son."""
+
     def __init__(self, screen, game_ref):
         self.screen = screen
         self.game_ref = game_ref

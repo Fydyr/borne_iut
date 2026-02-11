@@ -9,6 +9,8 @@ import pygame
 from config import *
 
 class OptionItem:
+    """Element d'option dans le menu des options, avec navigation horizontale entre les valeurs."""
+
     def __init__(self, text, position, options, current_index=0, font_size=36):
         self.text = text
         self.position = position
@@ -21,6 +23,11 @@ class OptionItem:
         self.color = NEON_BLUE
 
     def draw(self, surface):
+        """Dessine l'option avec son titre, sa valeur courante et les fleches de navigation.
+
+        Args:
+            surface: surface Pygame sur laquelle dessiner
+        """
         # Animation de sélection
         color = self.color
         size_offset = 0

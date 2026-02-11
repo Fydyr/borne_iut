@@ -8,6 +8,8 @@ Définit les directions possibles pour les joueurs
 from enum import Enum
 
 class Direction(Enum):
+    """Enumeration des quatre directions possibles pour les joueurs du jeu Tron."""
+
     UP = (0, -1)
     DOWN = (0, 1)
     LEFT = (-1, 0)

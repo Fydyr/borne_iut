@@ -1,3 +1,7 @@
+/**
+ * Constantes de configuration pour le niveau moyen du Demineur.
+ * Definit les dimensions du plateau, le nombre de bombes et la taille des cases.
+ */
 public class ConstanteMedium {
 
     public static final int widthMedium = 12;

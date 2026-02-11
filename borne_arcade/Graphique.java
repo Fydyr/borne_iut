@@ -12,9 +12,21 @@ import MG2D.audio.*;
 import MG2D.*;
 import MG2D.FenetrePleinEcran;
 
+/**
+ * Classe principale de l'interface graphique du menu de la borne d'arcade.
+ * Gère la fenêtre plein écran via MG2D, l'affichage des jeux disponibles,
+ * la navigation au joystick, le lancement des jeux et la musique de fond.
+ *
+ * L'interface est divisée en trois zones :
+ * <ul>
+ *   <li>{@link BoiteSelection} (gauche) : liste des jeux avec pointeur de sélection</li>
+ *   <li>{@link BoiteImage} (droite haut) : image de présentation du jeu sélectionné</li>
+ *   <li>{@link BoiteDescription} (droite bas) : description, contrôles et highscores</li>
+ * </ul>
+ */
 public class Graphique {
 
-    //private final Fenetre f;
+    /** Fenêtre plein écran MG2D. */
     private static final FenetrePleinEcran f = new FenetrePleinEcran("_Menu Borne D'arcade_");
     private int TAILLEX;
     private int TAILLEY;
@@ -22,16 +34,24 @@ public class Graphique {
     private BoiteSelection bs;
     private BoiteImage bi;
     private BoiteDescription bd;
+    /** Tableau des boutons, un par jeu détecté dans {@code projet/}. */
     public static Bouton[] tableau;
     private Pointeur pointeur;
     Font font;
     Font fontSelect;
+	/** Indique si le texte de chaque bouton est actuellement affiché (pour l'animation de clignotement). */
 	public static boolean[] textesAffiches;
+	/** Musique de fond actuellement en lecture. */
 	public static Bruitage musiqueFond;
 	private static String[] tableauMusiques;
 	private static int cptMus;
 
 
+    /**
+     * Construit l'interface graphique du menu.
+     * Initialise la fenêtre, charge les polices, scanne les jeux disponibles,
+     * crée les composants d'affichage et lance la musique de fond.
+     */
     public Graphique(){
     	
 
@@ -145,7 +165,12 @@ public class Graphique {
 	this.lectureMusiqueFond();
     }
 
-    public void selectionJeu(){	
+    /**
+     * Boucle principale de sélection de jeu.
+     * Gère le clignotement du texte du jeu sélectionné, la navigation dans la liste,
+     * le lancement du jeu choisi et le dialogue de confirmation de fermeture.
+     */
+    public void selectionJeu(){
 		Texture fondBlancTransparent = new Texture("./img/blancTransparent.png", new Point(0,0));
 		Rectangle boutonNon = new Rectangle(Couleur.ROUGE, new Point(340, 600), 200, 100, true);
 		Rectangle boutonOui = new Rectangle(Couleur.VERT, new Point(740, 600), 200, 100, true);
@@ -268,15 +293,24 @@ public class Graphique {
 		}//fin while true
     }
     
+    /**
+     * Lance la lecture d'une musique de fond choisie aléatoirement
+     * parmi les fichiers présents dans {@code sound/bg/}.
+     */
     public static void lectureMusiqueFond() {
     	musiqueFond = new Bruitage ("sound/bg/"+tableauMusiques[(int)(Math.random()*cptMus)]);
     	musiqueFond.lecture();
     }
 	
+	/** Arrête la musique de fond en cours de lecture. */
 	public static void stopMusiqueFond(){
 		musiqueFond.arret();
 	}
 	
+	/**
+	 * Réaffiche le texte d'un bouton dans la fenêtre (après clignotement).
+	 * @param valeur l'indice du bouton dans {@link #tableau}
+	 */
 	public static void afficherTexte(int valeur){
 		f.ajouter(tableau[valeur].getTexte());
 	}

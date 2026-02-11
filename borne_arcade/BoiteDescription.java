@@ -13,6 +13,15 @@ import MG2D.geometrie.Texte;
 import java.io.IOException;
 
 
+/**
+ * Boîte affichant la description, les contrôles et les highscores du jeu sélectionné.
+ * Les informations sont lues depuis les fichiers du répertoire de chaque jeu :
+ * <ul>
+ *   <li>{@code description.txt} : texte descriptif (max 10 lignes)</li>
+ *   <li>{@code bouton.txt} : mapping des boutons (format "joystick:A:B:C:X:Y:Z")</li>
+ *   <li>{@code highscore} : tableau des meilleurs scores</li>
+ * </ul>
+ */
 public class BoiteDescription extends Boite{
 
     private Texte[] message;
@@ -35,6 +44,11 @@ public class BoiteDescription extends Boite{
 	
 	
 	
+    /**
+     * Construit la boîte de description avec ses composants graphiques :
+     * textes de description, icônes de boutons/joystick et tableau de highscores.
+     * @param rectangle zone d'affichage dans l'interface
+     */
     BoiteDescription(Rectangle rectangle) {
 	super(rectangle);
 	
@@ -129,6 +143,10 @@ public class BoiteDescription extends Boite{
 
     }
 	
+    /**
+     * Lit le fichier {@code description.txt} du jeu et met à jour les textes affichés.
+     * @param path chemin vers le répertoire du jeu
+     */
     public void lireFichier(String path){
 	//System.out.println(path);
 	String fichier =path+"/description.txt";
@@ -167,6 +185,10 @@ public class BoiteDescription extends Boite{
 	}
     }
 
+    /**
+     * Lit le fichier {@code highscore} du jeu et met à jour le tableau des meilleurs scores.
+     * @param path chemin vers le répertoire du jeu
+     */
     public void lireHighScore(String path){
 	
         for(int i=0;i<10;i++){
@@ -194,6 +216,11 @@ public class BoiteDescription extends Boite{
     }
 
 	
+    /**
+     * Lit le fichier {@code bouton.txt} du jeu et met à jour les labels
+     * des boutons et du joystick affichés dans l'interface.
+     * @param path chemin vers le répertoire du jeu
+     */
     public void lireBouton(String path){
 	//System.out.println(path);
 	String fichier =path+"/bouton.txt";
