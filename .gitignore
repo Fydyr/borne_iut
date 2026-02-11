@@ -1,3 +1,6 @@
+# Ignore la documentation générée et les fichiers de build
+docs/generated/
+
 # Java
 *.class
 *.jar
