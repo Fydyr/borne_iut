@@ -1,15 +1,15 @@
 #!/bin/bash
 
 if [ -d "$HOME/git/MG2D" ]; then
-   echo "MG2D folder exists in user's home."
+   echo "Fichier git MG2D present dans le dossier home de l'utilisateur"
    DEPENDENCIES="$HOME/git/MG2D/"
 else
    if [ -f "../MG2D.jar" ]; then
-      echo "MG2D.jar exists."
+      echo "MG2D.jar existe."
       DEPENDENCIES="$(cd .. && pwd)/MG2D.jar"
    else
       echo "No MG2D dependency found"
-	DEPENDENCIES=null
+      DEPENDENCIES=null
    fi
 fi
 
