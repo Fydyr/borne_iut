@@ -17,6 +17,7 @@ else
          echo "Installation de MG2D par git dans le dossier ~/git/MG2D"
          mkdir -p $HOME/git/MG2D
          git clone https://github.com/synave/MG2D $HOME/git/MG2D
+         DEPENDENCIES="$HOME/git/MG2D/"
       fi
    fi
 fi
