@@ -1,0 +1,14 @@
+# Documentation generee par Doxygen
+docs/generated/
+
+# Java
+*.class
+*.jar
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
