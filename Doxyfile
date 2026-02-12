@@ -22,8 +22,7 @@ FILE_PATTERNS          = *.java \
 RECURSIVE              = YES
 INPUT_ENCODING         = UTF-8
 
-EXCLUDE                = borne_arcade/javazoom \
-                         borne_arcade/Documents/Documentation/doc_minimale.md
+EXCLUDE                = borne_arcade/javazoom
 EXCLUDE_PATTERNS       = */__pycache__/* \
                          */assets/* \
                          */fonts/* \
