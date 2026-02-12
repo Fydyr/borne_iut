@@ -1,0 +1,96 @@
+name: Release Notes
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Nom de la version (ex: v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dependances
+        run: pip install -r tools/requirements.txt
+
+      - name: Determiner la version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generer les notes de release
+        env:
+          OLLAMA_URL: https://ollama.kinator.fr
+          OLLAMA_MODEL: gemma3:27b
+          OLLAMA_FALLBACK_MODEL: qwen2.5:latest
+        run: |
+          python tools/release_notes.py \
+            --to ${{ steps.version.outputs.VERSION }} \
+            --version ${{ steps.version.outputs.VERSION }} \
+            --output release_notes.md
+
+      - name: Creer la release GitHub
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let notes = 'Notes de release non disponibles.';
+            try {
+              notes = fs.readFileSync('release_notes.md', 'utf8');
+            } catch (e) {}
+
+            const version = '${{ steps.version.outputs.VERSION }}';
+
+            // Verifier si la release existe deja
+            try {
+              await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: version,
+              });
+              console.log('Release existe deja, mise a jour...');
+              const releases = await github.rest.repos.listReleases({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+              const release = releases.data.find(r => r.tag_name === version);
+              if (release) {
+                await github.rest.repos.updateRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: release.id,
+                  body: notes,
+                });
+              }
+            } catch (e) {
+              // La release n'existe pas, la creer
+              await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: version,
+                name: `Release ${version}`,
+                body: notes,
+                draft: false,
+                prerelease: false,
+              });
+            }

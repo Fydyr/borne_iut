@@ -1,0 +1,228 @@
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * *" # nightly 2h du matin
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+  # ============================================================
+  # Job 1 : Build de la documentation Doxygen
+  # ============================================================
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer Doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen
+
+      - name: Generer la documentation
+        run: doxygen Doxyfile
+
+      - name: Upload artifact docs
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-html
+          path: docs/generated/html/
+
+  # ============================================================
+  # Job 2 : IA Doc Patch (PR uniquement)
+  # ============================================================
+  ai-doc-patch:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build-docs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Calculer le diff
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff --unified=3 origin/${{ github.base_ref }}...HEAD -- '*.java' '*.py' '*.lua' '*.md' > changes.diff
+          echo "Taille du diff : $(wc -l < changes.diff) lignes"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dependances
+        run: pip install -r tools/requirements.txt
+
+      - name: Generer les suggestions de doc (IA)
+        env:
+          OLLAMA_URL: https://ollama.kinator.fr
+          OLLAMA_MODEL: gemma3:27b
+          OLLAMA_FALLBACK_MODEL: qwen2.5:latest
+        run: python tools/ai_doc_patch.py changes.diff docs/ README.md
+
+      - name: Commit et push si docs modifiees
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "doc-bot"
+            git config user.email "doc-bot@users.noreply.github.com"
+            git add docs/ README.md
+            git commit -m "docs: mise a jour automatique depuis les changements de code"
+            git push
+            echo "DOC_UPDATED=true" >> $GITHUB_ENV
+          else
+            echo "DOC_UPDATED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commenter la PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let summary = 'Aucune suggestion de documentation generee.';
+            try {
+              summary = fs.readFileSync('doc_patch_summary.txt', 'utf8');
+            } catch (e) {}
+
+            const updated = process.env.DOC_UPDATED === 'true';
+            const icon = updated ? '📝' : 'ℹ️';
+            const status = updated
+              ? 'Des modifications de documentation ont ete commitees sur cette branche.'
+              : 'Aucune modification de documentation necessaire.';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `${icon} **Documentation automatique**\n\n${status}\n\n### Resume\n${summary}`
+            });
+
+  # ============================================================
+  # Job 3 : Doc Coverage (PR + nightly)
+  # ============================================================
+  doc-coverage:
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Analyser la couverture de documentation
+        id: coverage
+        run: |
+          python tools/doc_coverage.py borne_arcade/ --json --output coverage.json || true
+          python tools/doc_coverage.py borne_arcade/ --output coverage.txt || true
+
+      - name: Commenter la PR avec le rapport
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let report = 'Erreur lors de la generation du rapport.';
+            try {
+              const data = JSON.parse(fs.readFileSync('coverage.json', 'utf8'));
+              const icon = data.pass ? '✅' : '⚠️';
+              report = `${icon} **Couverture documentation : ${data.coverage}%** (seuil: ${data.threshold}%)\n\n`;
+              report += `- Total declarations : ${data.total}\n`;
+              report += `- Documentees : ${data.documented}\n`;
+              report += `- Non documentees : ${data.undocumented}\n`;
+
+              if (data.details && data.details.length > 0) {
+                report += `\n<details><summary>Declarations sans documentation (${data.details.length})</summary>\n\n`;
+                let currentFile = '';
+                for (const item of data.details.slice(0, 50)) {
+                  if (item.file !== currentFile) {
+                    currentFile = item.file;
+                    report += `\n**${currentFile}**\n`;
+                  }
+                  report += `- L${item.line}: \`${item.name}\`\n`;
+                }
+                if (data.details.length > 50) {
+                  report += `\n... et ${data.details.length - 50} autres\n`;
+                }
+                report += '\n</details>';
+              }
+            } catch (e) {
+              report = 'Impossible de lire le rapport de couverture.';
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `📊 **Rapport de couverture documentation**\n\n${report}`
+            });
+
+      - name: Creer une issue si coverage trop basse (nightly)
+        if: github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const data = JSON.parse(fs.readFileSync('coverage.json', 'utf8'));
+              if (!data.pass) {
+                // Verifier si une issue existe deja
+                const issues = await github.rest.issues.listForRepo({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: 'documentation',
+                  state: 'open',
+                });
+                const existing = issues.data.find(i => i.title.includes('Couverture documentation'));
+                if (!existing) {
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: `Couverture documentation insuffisante (${data.coverage}%)`,
+                    body: `La couverture de documentation est de **${data.coverage}%**, en dessous du seuil de ${data.threshold}%.\n\n${data.undocumented} declarations publiques n'ont pas de documentation.\n\nLancez \`python tools/doc_coverage.py borne_arcade/\` pour voir le detail.`,
+                    labels: ['documentation'],
+                  });
+                }
+              }
+            } catch (e) {
+              console.log('Pas de rapport de couverture disponible.');
+            }
+
+  # ============================================================
+  # Job 4 : Deploy sur GitHub Pages (push main uniquement)
+  # ============================================================
+  deploy-docs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-docs
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Telecharger l'artifact docs
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-html
+          path: ./html
+
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload vers Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./html
+
+      - name: Deployer sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
