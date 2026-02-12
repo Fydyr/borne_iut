@@ -10,8 +10,6 @@ import os
 from config import *  # Importer toutes les constantes
 
 class ScoreScreen:
-    """Ecran de score affichant les resultats et statistiques apres une partie de Tron."""
-
     def __init__(self, screen, game_stats):
         self.screen = screen
         self.width, self.height = screen.get_size()

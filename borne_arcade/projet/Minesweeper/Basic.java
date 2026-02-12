@@ -1,7 +1,3 @@
-/**
- * Niveau de base du Demineur.
- * Utilise les constantes par defaut definies dans {@link Constants}.
- */
 public class Basic implements Level {
 
     private int width = Constants.width;
@@ -38,10 +34,6 @@ public class Basic implements Level {
         return heightWindow;
     }
 
-    /**
-     * Lance une nouvelle partie avec ce niveau.
-     * @return la vue du jeu initialisee avec ce niveau
-     */
     public MinesweeperView onClick() {
         return new MinesweeperView(this);
     }

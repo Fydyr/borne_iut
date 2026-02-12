@@ -11,8 +11,6 @@ from direction import Direction
 from config import AI_DIFFICULTY_SETTINGS
 
 class AI(Player):
-    """Intelligence artificielle pour le jeu Tron, herite de Player et ajoute une logique de decision."""
-
     def __init__(self, x, y, color, glow_color, difficulty="moyen"):
         super().__init__(x, y, color, glow_color)
         self.difficulty = difficulty

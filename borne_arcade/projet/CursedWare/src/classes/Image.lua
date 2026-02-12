@@ -1,8 +1,3 @@
---- Classe representant une image affichable.
--- Herite de Rect et ajoute le chargement et le dessin d'une texture.
--- Le filtre de texture est configure en "nearest" pour un rendu pixel-art net.
--- @classmod Image
-
 -- LIBS
 local Vector2 = require("src/classes/Vector2")
 local Rect = require("src/classes/Rect")
@@ -10,8 +5,6 @@ local Rect = require("src/classes/Rect")
 -- CLASS
 local class = Rect:extend()
 
---- Cree une nouvelle image a partir d'un chemin de fichier.
--- @param ImagePath chemin vers le fichier image
 function class:new(ImagePath)
     self.super.new(self)
 
@@ -19,7 +12,6 @@ function class:new(ImagePath)
     self.Texture:setFilter("nearest")
 end
 
---- Dessine l'image a l'ecran avec position, rotation et echelle.
 function class:draw()
     local PosX, PosY, ScaleX, ScaleY = self:getDrawingCoordinates()
     local TextureWidth, TextureHeight = self.Texture:getDimensions()

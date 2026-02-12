@@ -12,34 +12,15 @@ import MG2D.geometrie.Texte;
 import MG2D.Couleur;
 
 
-/**
- * Boîte de sélection affichant la liste des jeux disponibles.
- * Gère la navigation avec le joystick du joueur 1 (haut/bas) et
- * le défilement circulaire de la liste. Détecte aussi la demande
- * de fermeture du menu (bouton Z du joueur 1).
- */
 public class BoiteSelection extends Boite{
     Pointeur pointeur;
     Font font;
 
-    /**
-     * Construit la boîte de sélection.
-     * @param rectangle zone d'affichage dans l'interface
-     * @param pointeur le curseur de sélection partagé avec les autres composants
-     */
     public BoiteSelection(Rectangle rectangle, Pointeur pointeur) {
 	super(rectangle);
 	this.pointeur = pointeur;
     }
 
-    /**
-     * Met à jour la sélection en fonction des entrées clavier.
-     * Gère le défilement circulaire : quand on dépasse le dernier jeu,
-     * la sélection revient au premier, et inversement.
-     * @param clavier le gestionnaire d'entrées clavier de la borne
-     * @return {@code true} si le menu reste ouvert, {@code false} si
-     *         le joueur a demandé à quitter (bouton Z)
-     */
     public boolean selection(ClavierBorneArcade clavier){
 	Bruitage selection = new Bruitage("sound/bip.mp3");
 	font = null;

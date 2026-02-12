@@ -1,10 +1,5 @@
 import java.util.ArrayList;
 
-/**
- * Represente le plateau de jeu du Demineur.
- * Contient les cases (mines et cases vides), gere les actions du joueur
- * et verifie les conditions de fin de partie.
- */
 public class Board {
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private int width;
@@ -12,12 +7,6 @@ public class Board {
     private int nbBombs;
     private ArrayList<Tile> discoveredTiles = new ArrayList<Tile>();
 
-    /**
-     * Construit un plateau avec les dimensions et le nombre de bombes donnes.
-     * @param width largeur du plateau en nombre de cases
-     * @param height hauteur du plateau en nombre de cases
-     * @param nbBombs nombre de bombes a placer aleatoirement
-     */
     public Board(int width, int height, int nbBombs) {
         // if (width >= 6 && height >= 6 && nbBombs >= 1 && nbBombs < width * height) {
             this.width = width;
@@ -62,10 +51,6 @@ public class Board {
         return this.discoveredTiles;
     }
 
-    /**
-     * Ajoute une case a la liste des cases decouvertes si elle n'y est pas deja.
-     * @param c la case a ajouter
-     */
     public void addDiscoveredTile(Tile c) {
         if (!this.discoveredTiles.contains(c)) {
             this.discoveredTiles.add(c);
@@ -76,12 +61,6 @@ public class Board {
         this.discoveredTiles.clear();
     }
 
-    /**
-     * Recupere la case situee aux coordonnees donnees.
-     * @param x coordonnee horizontale
-     * @param y coordonnee verticale
-     * @return la case correspondante, ou null si aucune case n'est trouvee
-     */
     public Tile getCase(int x, int y) {
         for (Tile c : this.tiles) {
             if (c.getX() == x && c.getY() == y) {
@@ -104,13 +83,6 @@ public class Board {
         }
     }
 
-    /**
-     * Execute une action sur la case correspondant aux coordonnees pixel.
-     * @param x coordonnee x en pixels
-     * @param y coordonnee y en pixels
-     * @param b le bouton d'action (creuser ou drapeau)
-     * @param sizeTile taille d'une case en pixels
-     */
     public void action(int x, int y, Button b, int sizeTile) {
         int i = x / sizeTile;
         int j = y / sizeTile;
@@ -130,10 +102,6 @@ public class Board {
         }
     }
 
-    /**
-     * Verifie si le joueur a perdu (une mine a ete decouverte).
-     * @return true si une mine est devoilee, false sinon
-     */
     public boolean endGameMine() {
         boolean end = false;
         int i = 0;
@@ -145,10 +113,6 @@ public class Board {
         return end;
     }
 
-    /**
-     * Verifie si le joueur a gagne (toutes les cases non-mines sont decouvertes).
-     * @return true si le joueur a gagne, false sinon
-     */
     public boolean endGameWin() {
         boolean end = true;
         int i = 0;

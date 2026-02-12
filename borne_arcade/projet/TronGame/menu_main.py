@@ -11,8 +11,6 @@ from menu_item import MenuItem
 from config import *
 
 class Menu:
-    """Menu principal du jeu Tron avec navigation par clavier et effets visuels style arcade."""
-
     def __init__(self, screen):
         self.screen = screen
         self.width, self.height = screen.get_size()

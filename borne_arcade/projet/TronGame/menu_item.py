@@ -9,8 +9,6 @@ import pygame
 from config import *
 
 class MenuItem:
-    """Element de menu interactif avec effet de selection anime et style neon."""
-
     def __init__(self, text, position, action, font_size=48):
         self.text = text
         self.position = position
@@ -21,11 +19,6 @@ class MenuItem:
         self.color = NEON_BLUE
 
     def draw(self, surface):
-        """Dessine l'element de menu avec son effet de glow et de selection.
-
-        Args:
-            surface: surface Pygame sur laquelle dessiner
-        """
         # Animation de sélection
         color = self.color
         size_offset = 0

@@ -13,8 +13,6 @@ from direction import Direction
 from config import *
 
 class Game:
-    """Classe gerant la logique principale d'une partie de Tron, incluant les joueurs, la grille et les collisions."""
-
     def __init__(self, screen, mode="single", difficulty="moyen", move_delay=None):
         self.screen = screen
         self.width, self.height = screen.get_size()
