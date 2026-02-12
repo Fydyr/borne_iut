@@ -2,4 +2,4 @@
 xdotool mousemove 1280 1024
 cd projet/JavaSpace
 touch highscore
-java -cp .:../..:$HOME/git/MG2D Main
+java -cp .:../..:/home/pi/git/MG2D Main

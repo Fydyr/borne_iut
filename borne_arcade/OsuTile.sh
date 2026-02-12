@@ -1,2 +1,2 @@
 cd projet/OsuTile
-python3 main.py
+python3.7 main.py
