@@ -52,7 +52,7 @@ Voir la [documentation complete](docs/pages/installation.md) pour les details.
 # Linux
 ./generate_docs.sh
 
-# Windows
+# Windows 
 generate_docs.bat
 ```
 
