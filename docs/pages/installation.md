@@ -52,12 +52,13 @@ Le jeu CursedWare nécessite le framework LÖVE 2D.
 
 ## Clonage du projet
 
-Créez un répertoire de travail et clonez le dépôt nécessaire :
+Créez un répertoire de travail et clonez les dépôts nécessaires :
 
 ```bash
 cd ~
 mkdir git
 cd git
+git clone https://github.com/synave/MG2D.git
 git clone <url-du-depot>/borne_arcade.git
 ```
 
@@ -78,7 +79,7 @@ Depuis le répertoire `borne_arcade/` :
 
 ```bash
 cd ~/git/borne_arcade
-.lancement_borne.sh
+./compile.sh
 ```
 
 Ou manuellement :
