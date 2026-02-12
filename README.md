@@ -27,27 +27,38 @@ Menu de sélection de jeux open source, conçu pour fonctionner sur Raspberry Pi
 ### Prérequis
 
 - Raspberry Pi 3 (ou supérieur)
-- Raspberry Pi OS
+- Raspbian / Raspberry Pi OS
 
 ### Dépendances
 
 ```bash
 sudo apt-get update
-sudo apt-get install openjdk-25-jdk git python3 python3-pip love
+sudo apt-get install openjdk-8-jdk git python3 python3-pip love
 pip3 install pygame
 ```
 
 ### Clonage
 
 ```bash
+mkdir -p ~/git && cd ~/git
+git clone https://github.com/synave/MG2D.git
 git clone https://github.com/Fydyr/borne_iut.git
+```
+
+MG2D doit être dans le même répertoire parent que `borne_iut` :
+
+```
+~/git/
+  ├── MG2D/
+  └── borne_iut/
 ```
 
 ### Lancement
 
 ```bash
 cd ~/git/borne_iut/borne_arcade
-sh ./lancement_borne.sh
+javac -cp .:../../MG2D/ *.java
+java -cp .:../../MG2D/ Main
 ```
 
 ## Contrôles
@@ -58,8 +69,8 @@ sh ./lancement_borne.sh
 | Joystick bas | Flèche bas | Joystick bas | L |
 | Joystick gauche | Flèche gauche | Joystick gauche | K |
 | Joystick droite | Flèche droite | Joystick droite | M |
-| Boutons haut | R / T / Y | Boutons haut | A / Z / E |
 | Boutons bas | F / G / H | Boutons bas | Q / S / D |
+| Boutons haut | R / T / Y | Boutons haut | A / Z / E |
 
 **Navigation dans le menu** : Joystick haut/bas (J1) pour parcourir, bouton A (F) pour lancer, bouton Z (Y) pour quitter.
 
@@ -81,7 +92,8 @@ sudo apt-get install doxygen    # Debian/Raspbian
 winget install doxygen          # Windows
 
 # Générer
-./generate_docs.sh              # Linux
+doxygen Doxyfile
+# ou
 ./generate_docs.bat             # Windows
 ```
 
