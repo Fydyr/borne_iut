@@ -44,6 +44,8 @@ Voir la [documentation complete](docs/pages/installation.md) pour les details.
 
 ## Documentation
 
+**Documentation en ligne** : [https://fydyr.github.io/borne_iut/](https://fydyr.github.io/borne_iut/)
+
 ### Generer la documentation
 
 ```bash
