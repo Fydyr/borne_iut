@@ -36,22 +36,26 @@ jobs:
           path: docs/generated/html/
 
   # ============================================================
-  # Job 2 : IA Doc Patch (PR uniquement)
+  # Job 2 : IA Doc Patch (PR + push + workflow_dispatch)
   # ============================================================
   ai-doc-patch:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: build-docs
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || '' }}
           fetch-depth: 0
 
       - name: Calculer le diff
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          git diff --unified=3 origin/${{ github.base_ref }}...HEAD -- '*.java' '*.py' '*.lua' '*.md' > changes.diff
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }} --depth=1
+            git diff --unified=3 origin/${{ github.base_ref }}...HEAD -- '*.java' '*.py' '*.lua' '*.md' > changes.diff
+          else
+            git diff --unified=3 HEAD^1...HEAD -- '*.java' '*.py' '*.lua' '*.md' > changes.diff
+          fi
           echo "Taille du diff : $(wc -l < changes.diff) lignes"
 
       - name: Setup Python
@@ -83,7 +87,7 @@ jobs:
           fi
 
       - name: Commenter la PR
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
