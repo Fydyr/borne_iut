@@ -3,10 +3,12 @@ name: Documentation - Remplissage existant
 # Workflow dedie a la documentation du code existant non documente.
 # Utilise Ollama pour generer et inserer inline Javadoc / docstrings / commentaires Lua.
 #
-# Declenchement : manuel uniquement (workflow_dispatch) pour eviter des commits
-# massifs non desires. Peut etre relance plusieurs fois pour traiter tous les fichiers.
+# - Sur une PR : documente le code de la branche et commente la PR avec le resume.
+# - Manuellement (workflow_dispatch) : traite le repertoire source configure,
+#   peut etre relance plusieurs fois pour couvrir tous les fichiers.
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       source_dir:
@@ -24,6 +26,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   ai-doc-fill:
@@ -31,6 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || '' }}
           fetch-depth: 0
 
       - name: Setup Python
@@ -63,7 +67,7 @@ jobs:
           fi
 
       - name: Commit et push si code modifie
-        if: github.event.inputs.dry_run != 'true'
+        if: github.event_name == 'pull_request' || github.event.inputs.dry_run != 'true'
         run: |
           if ! git diff --quiet; then
             git config user.name "doc-bot"
@@ -71,7 +75,31 @@ jobs:
             git add "${{ github.event.inputs.source_dir || 'borne_arcade/' }}"
             git commit -m "docs: ajout documentation manquante dans le code source"
             git push
-            echo "Fichiers documentes commites avec succes."
+            echo "DOC_FILLED=true" >> $GITHUB_ENV
           else
-            echo "Aucune modification a commiter."
+            echo "DOC_FILLED=false" >> $GITHUB_ENV
           fi
+
+      - name: Commenter la PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let summary = 'Aucune suggestion de documentation generee.';
+            try {
+              summary = fs.readFileSync('doc_fill_summary.txt', 'utf8');
+            } catch (e) {}
+
+            const filled = process.env.DOC_FILLED === 'true';
+            const icon = filled ? '✏️' : 'ℹ️';
+            const status = filled
+              ? 'De la documentation manquante a ete inseree directement dans le code source.'
+              : 'Aucune documentation manquante detectee dans le code source.';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `${icon} **Documentation inline automatique**\n\n${status}\n\n### Resume\n${summary}`
+            });
