@@ -1,0 +1,77 @@
+name: Documentation - Remplissage existant
+
+# Workflow dedie a la documentation du code existant non documente.
+# Utilise Ollama pour generer et inserer inline Javadoc / docstrings / commentaires Lua.
+#
+# Declenchement : manuel uniquement (workflow_dispatch) pour eviter des commits
+# massifs non desires. Peut etre relance plusieurs fois pour traiter tous les fichiers.
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_dir:
+        description: "Repertoire source a analyser"
+        default: "borne_arcade/"
+        required: false
+      max_files:
+        description: "Nombre maximum de fichiers a traiter (augmenter si peu de manques)"
+        default: "10"
+        required: false
+      dry_run:
+        description: "Simuler sans modifier les fichiers (pour verifier avant d'appliquer)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  ai-doc-fill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dependances
+        run: pip install -r tools/requirements.txt
+
+      - name: Generer la documentation manquante
+        env:
+          OLLAMA_URL: https://ollama.kinator.fr
+          OLLAMA_MODEL: gemma3:27b
+          OLLAMA_FALLBACK_MODEL: qwen2.5:latest
+        run: |
+          ARGS="${{ github.event.inputs.source_dir || 'borne_arcade/' }}"
+          ARGS="$ARGS --max-files ${{ github.event.inputs.max_files || '10' }}"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python tools/ai_doc_fill.py $ARGS
+
+      - name: Afficher le resume
+        if: always()
+        run: |
+          if [ -f doc_fill_summary.txt ]; then
+            echo "=== Resume ==="
+            cat doc_fill_summary.txt
+          fi
+
+      - name: Commit et push si code modifie
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "doc-bot"
+            git config user.email "doc-bot@users.noreply.github.com"
+            git add "${{ github.event.inputs.source_dir || 'borne_arcade/' }}"
+            git commit -m "docs: ajout documentation manquante dans le code source"
+            git push
+            echo "Fichiers documentes commites avec succes."
+          else
+            echo "Aucune modification a commiter."
+          fi
