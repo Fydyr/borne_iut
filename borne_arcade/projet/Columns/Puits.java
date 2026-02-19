@@ -6,6 +6,12 @@ import MG2D.geometrie.Point;
 import java.awt.*;
 import java.io.InputStream;
 
+/**
+ * Constructeur de la classe Puits.
+ * @param x Position X initiale du puits.
+ * @param y Position Y initiale du puits.
+ * @param numJoueur Identifiant du joueur associé au puits (1 ou 2).
+ */
 public class Puits {
     //CONSTANTES
     public static final int LARGEUR=6;
@@ -126,20 +132,36 @@ public class Puits {
 
     }
 
+/**
+ * Renvoie la grille de gemmes du puits.
+ * @return La grille de gemmes actuelle.
+ */
     public Gemme[][] getGrille(){
         return this.grille;
     }
 
+/**
+ * Renvoie la position X initiale du puits.
+ * @return Position X initiale.
+ */
     public int getXA(){
         return this.xA;
     }
 
+/**
+ * Renvoie la position Y initiale du puits.
+ * @return Position Y initiale.
+ */
     public int getYA(){
         return this.yA;
     }
 
 
 
+/**
+ * Affiche le contenu du puits sur une fenêtre de jeu.
+ * @param f La fenêtre de jeu sur laquelle afficher.
+ */
     public void afficher(Fenetre f){
         //Affichage des gemmes verrouillées
         for(int i=0;i<LARGEUR;i++){
@@ -171,6 +193,10 @@ public class Puits {
         //f.ajouter(new Texte(score.toString(),this.font,new Point(this.xScore,this.yScore)));
     }
 
+/**
+ * Affiche la colonne courante sur la fenêtre de jeu.
+ * @param f La fenêtre de jeu sur laquelle afficher.
+ */
     public void affichageCourant(Fenetre f){
         //Affichage des colones courante et suivante
         for(int i=0;i<Colone.GEMMESPARCOLONE;i++) {
@@ -180,6 +206,10 @@ public class Puits {
         }
     }
 
+/**
+ * Affiche la colonne suivante sur la fenêtre de jeu.
+ * @param f La fenêtre de jeu sur laquelle afficher.
+ */
     public void affichageSuivant(Fenetre f){
         //Affichage des colones courante et suivante
         for(int i=0;i<Colone.GEMMESPARCOLONE;i++) {
@@ -187,6 +217,9 @@ public class Puits {
         }
     }
 
+/**
+ * Crée une nouvelle colonne courante à partir de la colonne suivante.
+ */
     public void nouvelleColone(){
         this.coloneCourante=this.coloneSuivante;
         this.coloneCourante.setX(2);
@@ -207,10 +240,19 @@ public class Puits {
         this.coloneSuivante=new Colone(x,y);
     }
 
+/**
+ * Renvoie la colonne courante du puits.
+ * @return La colonne courante.
+ */
     public Colone getColoneCourante(){
         return this.coloneCourante;
     }
 
+/**
+ * Verrouille une gemme dans la grille.
+ * @param x Position X de la gemme à verrouiller.
+ * @param y Position Y de la gemme à verrouiller.
+ */
     public void verrouiller(){
         for(int i=0;i<Colone.GEMMESPARCOLONE;i++){
             this.grille[this.coloneCourante.getX()][this.coloneCourante.getY()+i]=this.coloneCourante.getGemme(i);
@@ -221,6 +263,10 @@ public class Puits {
     //TODO : vérification des combos pour chaque duo de coordonnées dans chaque direction
     //TODO : on appelle la fonction la première fois avec un niveau de 1
     //TODO : suppression pour les mêmes coordonnées et direction si niveau >=3
+/**
+ * Vérifie si une combinaison de gemmes est possible et effectue les changements nécessaires.
+ * @return true si une combinaison a été trouvée, false sinon.
+ */
     public int verification(){
         int res=0;
         for(int i=0;i<LARGEUR;i++){
@@ -254,6 +300,10 @@ public class Puits {
     //parcours récursif des éléments dans la direction indiquée à partir des coordonnées indiquées
     //retour du niveau de la vérif
     //arrêt si couleur du suivant différente ou limites du puits
+/**
+ * Vérifie si un combo est présent et met à jour le nombre de combos.
+ * @return Le nombre de combos actuels.
+ */
     public int verifCombo(int x, int y, int dirX, int dirY, int niveau){
         int res=niveau;
         if(x+dirX>=0 && x+dirX<this.LARGEUR && y+dirY>=0 && y+dirY<this.LIGNEVIE){
@@ -268,6 +318,9 @@ public class Puits {
 
     //suppression récursive des éléments dans la direction indiquée à partir des coordonnées indiquées
     //arrêt quand nombre = 0, nombre diminue de 1 à chaque appel
+/**
+ * Supprime les gemmes d'une combinaison validée.
+ */
     public void supprCombo(int x, int y, int dirX, int dirY, int nombre){
         //this.grille[x][y]=new Gemme(-Gemme.NBFRAMESUPPR);
         this.aSupprimer[x][y]=true;
@@ -277,6 +330,10 @@ public class Puits {
         }
     }
 
+/**
+ * Vérifie si des gemmes peuvent être supprimées dans la grille.
+ * @return true si des gemmes peuvent être supprimées, false sinon.
+ */
     public int verifSuppr(int x, int y, int dirX, int dirY){
         int res=0;
         if(this.grille[x][y].getCouleur()>0) {
@@ -290,6 +347,9 @@ public class Puits {
         return res;
     }
 
+/**
+ * Anime l'effet de suppression des gemmes.
+ */
     public int animSuppr(){
         int res=0;
         for(int i=0;i<LARGEUR;i++) {
@@ -304,6 +364,10 @@ public class Puits {
         return res;
     }
 
+/**
+ * Vérifie si une chute est possible et effectue les changements nécessaires.
+ * @return true si une chute a été effectuée, false sinon.
+ */
     public boolean verifChute(){
         boolean res=false;
         for(int i=0;i<LARGEUR;i++) {
@@ -320,37 +384,73 @@ public class Puits {
     }
 
 
+/**
+ * Renvoie le nombre de combos actuels.
+ * @return Le nombre de combos actuels.
+ */
     public int getNumCombo(){
         return this.numCombo;
     }
 
+/**
+ * Définit un nouveau nombre de combos.
+ * @param numCombo Le nouveau nombre de combos.
+ */
     public void setNumCombo(int num){
         this.numCombo=num;
     }
 
+/**
+ * Définit le score actuel du joueur.
+ * @param score Le nouveau score.
+ */
     public void setScore(int score){this.score=score;}
 
+/**
+ * Renvoie le score actuel du joueur.
+ * @return Le score actuel.
+ */
     public int getScore(){
         //System.out.println(this.score);
         return this.score;
     }
 
+/**
+ * Définit un nouveau score tampon (score temporaire).
+ * @param scoreTampon Le nouveau score tampon.
+ */
     public void setScoreTampon(int scoreTampon){
         this.scoreTampon=scoreTampon;
     }
 
+/**
+ * Renvoie le score tampon actuel (score temporaire).
+ * @return Le score tampon actuel.
+ */
     public int getScoreTampon(){
         return this.scoreTampon;
     }
 
+/**
+ * Renvoie le niveau actuel du joueur.
+ * @return Le niveau actuel.
+ */
     public int getNiveau(){
         return this.niveau;
     }
 
+/**
+ * Définit un nouveau niveau pour le joueur.
+ * @param niveau Le nouveau niveau.
+ */
     public void setNiveau(int niveau){
         this.niveau=niveau;
     }
 
+/**
+ * Renvoie le nombre de gemmes supprimées.
+ * @return Le nombre de gemmes supprimées.
+ */
     public int getGemmesSuppr(){
         return this.gemmesSuppr;
     }

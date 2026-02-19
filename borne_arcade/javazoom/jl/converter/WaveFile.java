@@ -47,6 +47,13 @@ public class WaveFile extends RiffFile
 	      Config(44100,(short)16,(short)1);
    		}
 
+/**
+ * Configures the wave format data.
+ *
+ * @param NewSamplingRate The new sampling rate.
+ * @param NewBitsPerSample The new bits per sample.
+ * @param NewNumChannels The new number of channels.
+ */
    	   public void Config (int NewSamplingRate, short NewBitsPerSample, short NewNumChannels)
        {
       	  nSamplesPerSec  = NewSamplingRate;
@@ -71,6 +78,11 @@ public class WaveFile extends RiffFile
       		header.ckSize   =   16;
    		}
 
+/**
+ * Verifies the validity of the wave format chunk.
+ *
+ * @return 1 if valid, 0 otherwise.
+ */
    		public int VerifyValidity()
    		{
       	    boolean ret = header.ckID == FourCC("fmt ") &&
@@ -88,6 +100,9 @@ public class WaveFile extends RiffFile
    		}
 	}
 
+/**
+ * Represents a wave file sample.
+ */
 	public class WaveFileSample
 	{
    		public short[] 				chan;
@@ -117,6 +132,12 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Opens the wave file for reading.
+ *
+ * @param Filename The name of the file to open.
+ * @return A success code.
+ */
    public int OpenForRead (String Filename)
    {
       // Verify filename parameter as best we can...
@@ -228,6 +249,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Reads a sample from the wave file.
+ */
    public int ReadSample ( short[] Sample )
    {
    
@@ -236,6 +260,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Writes a sample to the wave file.
+ */
    public int WriteSample( short[] Sample )
    {
       int retcode = DDC_SUCCESS;
@@ -303,6 +330,9 @@ public class WaveFile extends RiffFile
 	/**
 	 *
 	 *
+/**
+ * Seeks to a specific sample in the wave file.
+ */
    public int SeekToSample ( long SampleIndex )
    {
       if ( SampleIndex >= NumSamples() )
@@ -328,12 +358,18 @@ public class WaveFile extends RiffFile
    /**
     * Read 16-bit audio.
 	*
+/**
+ * Reads data from the wave file.
+ */
    public int ReadData  (short[] data, int numData)
    {return super.Read ( data, numData * 2);} */
 
    /**
     * Write 8-bit audio.
 	*
+/**
+ * Writes data to the wave file.
+ */
    public int WriteData ( byte[] data, int numData )
    {
    	  pcm_data.ckSize += numData;
@@ -343,6 +379,9 @@ public class WaveFile extends RiffFile
    /**
     * Read 8-bit audio.
 	*
+/**
+ * Reads data from the wave file.
+ */
    public int ReadData ( byte[] data, int numData )
    {return super.Read ( data, numData );} */
    
@@ -350,6 +389,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Reads multiple samples from the wave file.
+ */
    public int ReadSamples  (int num, int [] WaveFileSample)
    {
    
@@ -358,6 +400,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Writes a mono sample to the wave file.
+ */
    public int WriteMonoSample ( short[] SampleData )
    {
       switch ( wave_format.data.nBitsPerSample )
@@ -376,6 +421,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Writes a stereo sample to the wave file.
+ */
    public int WriteStereoSample  ( short[] LeftSample, short[] RightSample )
    {
       int retcode = DDC_SUCCESS;
@@ -414,6 +462,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Reads a mono sample from the wave file.
+ */
    public int ReadMonoSample ( short[] Sample )
    {
       int retcode = DDC_SUCCESS;
@@ -438,6 +489,9 @@ public class WaveFile extends RiffFile
    /**
     *
 	*
+/**
+ * Reads a stereo sample from the wave file.
+ */
    public int ReadStereoSample ( short[] LeftSampleData, short[] RightSampleData )
    {
       int retcode = DDC_SUCCESS;
@@ -479,15 +533,35 @@ public class WaveFile extends RiffFile
    }
 
    // [Hz]
+/**
+ * Returns the sampling rate.
+ *
+ * @return The sampling rate.
+ */
    public int SamplingRate()
    {return wave_format.data.nSamplesPerSec;}
 
+/**
+ * Returns the bits per sample.
+ *
+ * @return The bits per sample.
+ */
    public short BitsPerSample()
    {return wave_format.data.nBitsPerSample;}
 
+/**
+ * Returns the number of channels.
+ *
+ * @return The number of channels.
+ */
    public short NumChannels()
    {return wave_format.data.nChannels;}
 
+/**
+ * Returns the number of samples.
+ *
+ * @return The number of samples.
+ */
    public int NumSamples()
    {return num_samples;}
 
