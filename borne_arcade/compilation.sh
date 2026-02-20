@@ -30,10 +30,15 @@ if [ -n "$DEPENDENCIES" ]; then
            echo "Veuillez patienter"
            javac -cp .:../..:"$DEPENDENCIES" *.java
        else
-           if find . -maxdepth 1 -type f -name "*.py" | grep -q .; then
+           if find . -maxdepth 2 -type f -name "*.py" | grep -q .; then
                echo "Fichiers Python trouvés dans "$i
-               #echo "Création d'un venv"
-               #python -m venv venv
+               if [ -f "./requirements.txt" ]; then
+                   echo "Création d'un venv"
+
+                   # Direct execution without needing to 'source'
+                   python3 -m venv ./venv
+                   ./venv/bin/pip install -r requirements.txt
+               fi
            else
                echo "Pas de fichiers Java ou python dans "$i", compilation ignorée"
            fi
