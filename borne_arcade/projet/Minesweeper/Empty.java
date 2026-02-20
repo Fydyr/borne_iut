@@ -2,6 +2,9 @@ import MG2D.geometrie.Point;
 import MG2D.geometrie.Rectangle;
 import MG2D.geometrie.Texture;
 
+/**
+ * Represents an empty tile in the Minesweeper game.
+ */
 public class Empty implements Tile {
     /* Attributes */
     private boolean masked;
@@ -35,49 +38,85 @@ public class Empty implements Tile {
     /*
      * Getters
      */
+/**
+ * @return True if the tile is masked, false otherwise.
+ */
     public boolean getMasked() {
         return this.masked;
     }
 
+/**
+ * @return True if the tile is flagged, false otherwise.
+ */
     public boolean getFlag() {
         return this.flag;
     }
 
+/**
+ * @return The x coordinate of the tile.
+ */
     public int getX() {
         return this.x;
     }
 
+/**
+ * @return The y coordinate of the tile.
+ */
     public int getY() {
         return this.y;
     }
 
+/**
+ * @return The number of neighboring mines.
+ */
     public int getNbNeighbours() {
         return this.nbNeighbours;
     }
 
     /* Setters */
+/**
+ * @param masked The new masked state of the tile.
+ */
     public void setMasked(boolean masked) {
         this.masked = masked;
     }
 
+/**
+ * @param flag The new flag state of the tile.
+ */
     public void setFlag(boolean flag) {
         this.flag = flag;
     }
 
+/**
+ * @param x The new x coordinate of the tile.
+ */
     public void setX(int x) {
         this.x = x;
     }
 
+/**
+ * @param y The new y coordinate of the tile.
+ */
     public void setY(int y) {
         this.y = y;
     }
 
+/**
+ * Sets the x and y coordinates of the tile.
+ * @param x The new x coordinate.
+ * @param y The new y coordinate.
+ */
     public void setXY(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
     /* Methods */
+/**
+ * Discovers the tile and recursively discovers neighboring tiles if this tile has no neighboring mines.
+ * @param board The game board.
+ */
     public void discover(Board board) {
         this.masked = false;
         board.addDiscoveredTile(this);
@@ -150,12 +189,20 @@ public class Empty implements Tile {
         }
     }
 
+/**
+ * Toggles the flag state of the tile.
+ * @param board The game board.
+ */
     public void switchFlag(Board board) {
         this.flag = !this.flag;
         board.addDiscoveredTile(this);
     }
 
     @Override
+/**
+ * @param sizeTile The size of each tile in pixels.
+ * @return A rectangle representing the tile's graphic.
+ */
     public Rectangle displayGraphic(int sizeTile) {
         Point p = new Point(this.x * sizeTile, this.y * sizeTile);
         if (this.masked) {
@@ -173,6 +220,9 @@ public class Empty implements Tile {
     }
 
     @Override
+/**
+ * Displays the tile's state to the console.
+ */
     public void display() {
         if (this.masked) {
             if (this.flag) {
@@ -186,6 +236,11 @@ public class Empty implements Tile {
     }
 
     @Override
+/**
+ * Counts the number of neighboring mines.
+ * @param plato The game board.
+ * @return The number of neighboring mines.
+ */
     public int neighbour(Board plato) {
         int nbN = 0;
         int x = this.x;
@@ -242,16 +297,26 @@ public class Empty implements Tile {
     }
 
     @Override
+/**
+ * Adds 1 to the number of neighboring mines.
+ * @return 1
+ */
     public int addNeighbour() {
         return 0;
     }
 
     @Override
+/**
+ * Ends the game because a mine has been discovered.
+ */
     public boolean endGameMine() {
         return false;
     }
 
     @Override
+/**
+ * Ends the game because all non-mine tiles have been discovered.
+ */
     public boolean endGameWin() {
         if (this.masked) {
             return false;

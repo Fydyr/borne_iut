@@ -188,36 +188,72 @@ class Jeu{ // Définition de la classe
     //////////////////////////////// Accesseurs & Mutateurs \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
 
     //joueur
+/**
+ * Retourne le joueur.
+ * @return Le joueur.
+ */
     public Joueur getJoueur(){
 	return player1;
     }
+/**
+ * Modifie le joueur.
+ * @param j Le nouveau joueur.
+ */
     public void setJoueur(Joueur j){
 	player1 = new Joueur(j);
     }
 
     //tableau dynamique d'ennemis
+/**
+ * Retourne le tableau d'ennemis.
+ * @return Le tableau d'ennemis.
+ */
     public ArrayList<Ennemi> getTabEnnemis(){
 	return tabEnnemis;	
     }
+/**
+ * Modifie le tableau d'ennemis.
+ * @param e Le nouveau tableau d'ennemis.
+ */
     public void setTabEnnemis(ArrayList<Ennemi> e){
 	tabEnnemis = e;
     }
     
     //score & gameover
+/**
+ * Retourne le score.
+ * @return Le score.
+ */
     public int getScore(){
 	return score;
     }
+/**
+ * Modifie le score.
+ * @param score Le nouveau score.
+ */
     public void setScore(int s){
 	score = s;
     }
+/**
+ * Retourne l'image de gameover.
+ * @return L'image de gameover.
+ */
     public Texture getGameover(){
 	return gameover;
     }
+/**
+ * Modifie l'image de gameover.
+ * @param gameover La nouvelle image de gameover.
+ */
     public void setGameover(Texture go){
 	gameover = new Texture(go);
     }
 
     //fenetre
+/**
+ * Retourne la fenetre.
+ * @return La fenetre.
+ */
     public Fenetre getFenetre(){
 	return fen;
     }
@@ -226,34 +262,66 @@ class Jeu{ // Définition de la classe
 	  }
     */    
     //Taille fenetre
+/**
+ * Retourne la largeur de la fenetre.
+ * @return La largeur de la fenetre.
+ */
     public int getTailleX(){
 	return TAILLEX;
     }
+/**
+ * Retourne la longueur de la fenetre.
+ * @return La longueur de la fenetre.
+ */
     public int getTailleY(){
 	return TAILLEY;
     }
     
+/**
+ * Modifie la largeur de la fenetre.
+ * @param TAILLEX La nouvelle largeur.
+ */
     public void setTailleX(int tail){
         TAILLEX = tail;
     }
 
+/**
+ * Modifie la longueur de la fenetre.
+ * @param TAILLEY La nouvelle longueur.
+ */
     public void setTailleY(int tail){
 	TAILLEY = tail;
     }    
 
 
     //affichages
+/**
+ * Retourne l'affichage du score.
+ * @return L'affichage du score.
+ */
     public Texte getAff_score(){
 	return aff_score;
     }
+/**
+ * Modifie l'affichage du score.
+ * @param aff_score Le nouvel affichage du score.
+ */
     public void setAff_score(Texte af){
 	aff_score = new Texte(af);
     }
 
+/**
+ * Retourne l'affichage de gameover.
+ * @return L'affichage de gameover.
+ */
     public Texte getAff_gameover(){
 	return aff_gameover;
     }
 
+/**
+ * Modifie l'affichage de gameover.
+ * @param aff_gameover Le nouvel affichage de gameover.
+ */
     public void setAff_gameover(Texte af){
 	aff_gameover = new Texte(af);
     }
@@ -262,6 +330,9 @@ class Jeu{ // Définition de la classe
     ///////////////////////////////////////// Méthodes \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
 
     /////////////////////////////////////////////////
+/**
+ * Met à jour l'état du jeu à chaque frame.
+ */
     public void AvancerUnPasDeTemps(){
 	try{
 	    Thread.sleep(40);
@@ -334,6 +405,9 @@ class Jeu{ // Définition de la classe
     }
 
     //////////////////////////////////////////////////Génération aléatoire ennemis
+/**
+ * Génère un nouvel ennemi.
+ */
     public void GenererEnnemi(){
 	if(score<5){
 	    random = 2;	//only police
@@ -409,6 +483,9 @@ class Jeu{ // Définition de la classe
     /////////////////////////////////////////////////////
     // fin
         
+/**
+ * Gère la fin du jeu.
+ */
     public void fin(){
 	for(int ind=0;ind<(tabEnnemis.size()-1);ind++){  // on check tout l'ArrayList qui contient les ennemis
 	   
@@ -471,6 +548,9 @@ class Jeu{ // Définition de la classe
 	}
     }
     ////////////////////////////////////////////////////////////////// Génération aléatoire décor 
+/**
+ * Génère un élément de décor aléatoire.
+ */
     public void GenererDecor(){
 	random = (int)(Math.random()*(3-1))+1; // gauche ou droite
 	
