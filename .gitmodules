@@ -1,0 +1,3 @@
+[submodule "borne_arcade/projet/XylophoneChampion"]
+	path = borne_arcade/projet/XylophoneChampion
+	url = https://github.com/kinator/XylophoneChampion.git
