@@ -21,7 +21,6 @@ if [ -n "$DEPENDENCIES" ]; then
 
    cd projet
 
-   #PENSER A REMETTRE COMPILATION JEUX!!!
    for i in *
    do
        cd $i
@@ -31,7 +30,18 @@ if [ -n "$DEPENDENCIES" ]; then
            echo "Veuillez patienter"
            javac -cp .:../..:"$DEPENDENCIES" *.java
        else
-           echo "Pas de fichiers Java dans "$i", compilation ignorée"
+           if find . -maxdepth 2 -type f -name "*.py" | grep -q .; then
+               echo "Fichiers Python trouvés dans "$i
+               if [ -f "./requirements.txt" ]; then
+                   echo "Création d'un venv"
+
+                   # Direct execution without needing to 'source'
+                   python3 -m venv ./venv
+                   ./venv/bin/pip install -r requirements.txt
+               fi
+           else
+               echo "Pas de fichiers Java ou python dans "$i", compilation ignorée"
+           fi
        fi
        cd ..
    done
