@@ -1,7 +1,21 @@
 #!/bin/bash
 
-xkbcomp -I$(cd "$(dirname "$1")" && pwd -P) \
-        $(cd "$(dirname "$1")" && pwd -P)/borne $DISPLAY
+# determine script directory early so keymap commands can use it
+FOLDER=$(cd "$(dirname "$0")" && pwd -P)
+
+# attempt to load the custom key symbols stored alongside this script
+echo "Loading custom keymap from $FOLDER"
+if ! setxkbmap -I"$FOLDER" -symbols 'borne(basic)'; then
+    echo "setxkbmap failed, trying xkbcomp fallback"
+    if ! xkbcomp -I"$FOLDER" "$FOLDER/borne" "$DISPLAY"; then
+        echo "ERROR: unable to load keymap" >&2
+        # continue anyway, maybe the default layout is acceptable
+    fi
+fi
+
+# show what layout is active for debugging purposes
+setxkbmap -print -verbose 5
+
 
 if [ -d "$HOME/git/MG2D" ]; then
    echo "Fichier git MG2D present dans le dossier home de l'utilisateur"
