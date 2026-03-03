@@ -1,0 +1,4 @@
+#!/bin/bash
+submodule_name=$1
+submodule_url=$2
+git submodule update --init --recursive borne_arcade/projet/$submodule_name
