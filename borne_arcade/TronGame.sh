@@ -1,2 +1,4 @@
+#!/bin/bash
 cd projet/TronGame
-python3.7 main.py
+source venv/bin/activate
+python3 main.py

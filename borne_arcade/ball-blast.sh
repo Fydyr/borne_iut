@@ -1,2 +1,4 @@
+#!/bin/bash
 cd projet/ball-blast
-python3.7 ./src
+source venv/bin/activate
+python3 ./src
