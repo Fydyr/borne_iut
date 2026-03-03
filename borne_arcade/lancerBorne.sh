@@ -1,6 +1,7 @@
 #!/bin/bash
 
-setxkbmap borne
+xkbcomp -I$(cd "$(dirname "$1")" && pwd -P) \
+        $(cd "$(dirname "$1")" && pwd -P)/borne $DISPLAY
 
 if [ -d "$HOME/git/MG2D" ]; then
    echo "Fichier git MG2D present dans le dossier home de l'utilisateur"
