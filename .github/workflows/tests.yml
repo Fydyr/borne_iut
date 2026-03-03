@@ -45,7 +45,7 @@ jobs:
           failed=0
           for dir in */; do
             dir="${dir%/}"
-            if ls "$dir"/*.java 2>/dev/null | head -1 > /dev/null; then
+            if ls "$dir"/*.java 2>/dev/null 1>/dev/null; then
               echo "Compilation de $dir..."
               (cd "$dir" && javac -cp .:../..:"$DEPS" *.java) \
                 && echo "  OK - $dir" \
