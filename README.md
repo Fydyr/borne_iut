@@ -27,13 +27,35 @@ Menu de selection en Java (MG2D) et collection de 14 jeux en Java, Python et Lua
 | Puissance_X | Java / MG2D | Puissance 4 |
 | Snake_Eater | Java / MG2D | Snake |
 | TronGame | Python / Pygame | Tron |
+| XylophoneChampion | Python / Pygame | XyloChampion |
 
 ## Installation rapide
 
+### 1. Cloner le depot
+
 ```bash
-cd ~/git
-git clone <URL_DU_DEPOT>/borne_arcade.git
-cd borne_arcade
+git clone <URL_DU_DEPOT>/borne_iut.git
+cd borne_iut
+```
+
+### 2. Installer les dependances (setup.sh)
+
+Le script `setup.sh` installe toutes les dependances systeme et initialise les sous-modules Git :
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+Ce script effectue les operations suivantes :
+- Installe **OpenJDK 25**, **Python 3.13**, **LOVE 2D**, **pygame** et **git** via `apt`
+- Initialise et telecharge tous les **sous-modules Git** (`git submodule update --init --recursive`)
+
+> **Note** : Ce script necessite les droits `sudo` pour installer les paquets systeme.
+
+### 3. Lancer la borne
+
+```bash
 chmod +x lancerBorne.sh
 ./lancerBorne.sh
 ```
