@@ -1,0 +1,127 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+
+  # ============================================================
+  # 1. Compilation Java : menu (+ tests) et tous les jeux Java
+  # ============================================================
+  compilation-java:
+    name: Compilation Java
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Installer Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Cloner MG2D
+        run: git clone --depth 1 https://github.com/synave/MG2D $HOME/git/MG2D
+
+      - name: Compiler le menu de la borne (+ TestHighScore, TestClavierBorneArcade)
+        working-directory: borne_arcade
+        run: |
+          echo "Compilation du menu..."
+          javac -cp .:$HOME/git/MG2D/ *.java
+          echo "OK - Menu compilé"
+
+      - name: Compiler les jeux Java
+        working-directory: borne_arcade/projet
+        run: |
+          DEPS="$HOME/git/MG2D/"
+          failed=0
+          for dir in */; do
+            dir="${dir%/}"
+            if ls "$dir"/*.java 2>/dev/null | head -1 > /dev/null; then
+              echo "Compilation de $dir..."
+              (cd "$dir" && javac -cp .:../..:"$DEPS" *.java) \
+                && echo "  OK - $dir" \
+                || { echo "  ECHEC - $dir"; failed=1; }
+            fi
+          done
+          exit $failed
+
+  # ============================================================
+  # 2. Vérification Python : syntaxe + dépendances
+  # ============================================================
+  python-games:
+    name: Python — ${{ matrix.game }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        game:
+          - ball-blast
+          - OsuTile
+          - TronGame
+          - PianoTile
+          - XylophoneChampion
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Installer Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Installer les dépendances système (pour librosa / XylophoneChampion)
+        if: matrix.game == 'XylophoneChampion'
+        run: sudo apt-get install -y libsndfile1
+
+      - name: Installer les dépendances Python
+        working-directory: borne_arcade/projet/${{ matrix.game }}
+        run: |
+          if [ -f requirements.txt ]; then
+            echo "Installation des dépendances..."
+            pip install -r requirements.txt
+          else
+            echo "Pas de requirements.txt — skip"
+          fi
+
+      - name: Vérification syntaxique Python
+        working-directory: borne_arcade/projet/${{ matrix.game }}
+        run: |
+          echo "Vérification de la syntaxe Python..."
+          find . -name "*.py" \
+            -not -path "./venv/*" \
+            -not -path "./__pycache__/*" \
+            -print0 | xargs -0 python -m py_compile
+          echo "OK - Syntaxe Python valide"
+
+  # ============================================================
+  # 3. Vérification syntaxique Lua — CursedWare
+  # ============================================================
+  lua-syntax:
+    name: Vérification Lua — CursedWare
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Lua 5.4
+        run: sudo apt-get install -y lua5.4
+
+      - name: Vérification syntaxique Lua
+        working-directory: borne_arcade/projet/CursedWare
+        run: |
+          echo "Vérification de la syntaxe Lua..."
+          find . -name "*.lua" -print0 | xargs -0 luac5.4 -p
+          echo "OK - Syntaxe Lua valide"
