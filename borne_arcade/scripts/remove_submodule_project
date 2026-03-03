@@ -1,0 +1,6 @@
+#!/bin/bash
+submodule_name=$1
+submodule_url=$2
+git submodule deinit -f borne_arcade/projet/$submodule_name
+git rm -f borne_arcade/projet/$submodule_name
+rm -rf .git/modules/borne_arcade/projet/$submodule_name
