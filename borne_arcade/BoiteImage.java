@@ -16,7 +16,7 @@ public class BoiteImage extends Boite{
 	    this.image = new Texture(image+"/photo_small.png", new Point(760, 648));
 	    //this.image.setTaille(400, 320);
 	} else {
-	    this.image.setImg("./img/synave.png");
+	    this.image.setImg("img/synave.png");
 	}
 	this.image = new Texture(image+"/photo_small.png", new Point(760, 648));
     }
