@@ -31,12 +31,33 @@ jobs:
       - name: Cloner MG2D
         run: git clone --depth 1 https://github.com/synave/MG2D $HOME/git/MG2D
 
-      - name: Compiler le menu de la borne (+ TestHighScore, TestClavierBorneArcade)
+      - name: Compiler le menu de la borne (+ tous les tests)
         working-directory: borne_arcade
         run: |
           echo "Compilation du menu..."
           javac -cp .:$HOME/git/MG2D/ *.java
           echo "OK - Menu compilé"
+
+      - name: Tests unitaires — LigneHighScore
+        working-directory: borne_arcade
+        run: |
+          echo "Lancement de TestLigneHighScoreUnit..."
+          java -cp .:$HOME/git/MG2D/ TestLigneHighScoreUnit
+          echo "OK - TestLigneHighScoreUnit"
+
+      - name: Tests unitaires — logique HighScore (suivant/precedent/fichiers)
+        working-directory: borne_arcade
+        run: |
+          echo "Lancement de TestHighScoreLogique..."
+          java -cp .:$HOME/git/MG2D/ TestHighScoreLogique
+          echo "OK - TestHighScoreLogique"
+
+      - name: Tests unitaires — ClavierBorneArcade
+        working-directory: borne_arcade
+        run: |
+          echo "Lancement de TestClavierLogique..."
+          java -Djava.awt.headless=true -cp .:$HOME/git/MG2D/ TestClavierLogique
+          echo "OK - TestClavierLogique"
 
       - name: Compiler les jeux Java
         working-directory: borne_arcade/projet
