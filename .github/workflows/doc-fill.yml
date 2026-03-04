@@ -67,7 +67,7 @@ jobs:
           fi
 
       - name: Commit et push si code modifie
-        if: github.event_name == 'pull_request' || github.event.inputs.dry_run != 'true'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'
         run: |
           if ! git diff --quiet; then
             git config user.name "doc-bot"
