@@ -30,7 +30,13 @@ jobs:
 
       - name: Installer Doxygen
         run: |
-          sudo snap install doxygen
+          TAG=$(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest | jq -r '.tag_name')
+          VERSION=${TAG/Release_/}
+          VERSION=${VERSION//_/.}
+          wget -q "https://github.com/doxygen/doxygen/releases/download/${TAG}/doxygen-${VERSION}.linux.bin.tar.gz"
+          tar -xzf "doxygen-${VERSION}.linux.bin.tar.gz"
+          DOXY_BIN=$(find . -name "doxygen" -type f | head -1)
+          sudo install -m 755 "$DOXY_BIN" /usr/local/bin/doxygen
           doxygen --version
 
       - name: Generer la documentation
