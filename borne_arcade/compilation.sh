@@ -33,10 +33,14 @@ if [ -n "$DEPENDENCIES" ]; then
            if find . -maxdepth 2 -type f -name "*.py" | grep -q .; then
                echo "Fichiers Python trouvés dans "$i
                if [ -f "./requirements.txt" ]; then
-                   echo "Création d'un venv"
-
-                   # Direct execution without needing to 'source'
-                   python3 -m venv ./venv
+                   if [ -d "./venv" ]; then
+                       echo "venv already exists, skipping creation"
+                   else
+                       echo "Création d'un venv"
+                       # Direct execution without needing to 'source'
+                       python3 -m venv ./venv
+                   fi
+                   # always (re)install requirements to ensure deps are up to date
                    ./venv/bin/pip install -r requirements.txt
                fi
            else
