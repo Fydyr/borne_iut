@@ -8,7 +8,7 @@ OUTPUT_DIRECTORY       = docs/generated
 OUTPUT_LANGUAGE        = French
 
 # Entrees
-INPUT                  = borne_arcade/ docs/pages/
+INPUT                  = borne_arcade/ borne_arcade/projet/XylophoneChampion/ docs/pages/
 RECURSIVE              = YES
 FILE_PATTERNS          = *.java *.py *.lua *.md
 EXCLUDE_PATTERNS       = */generated/* */__pycache__/* *.class */photos/* */rapport_soutenance/* */doc_minimale.md
