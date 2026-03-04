@@ -9,7 +9,7 @@ class LigneHighScore{
 
     public LigneHighScore(String nnom, int sscore){
 	if(nnom.length()>3)
-	    nnom="AAA";
+	    nom="AAA";
 	else
 	    nom=new String(nnom);
 	if(sscore<0)
