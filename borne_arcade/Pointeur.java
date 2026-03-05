@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.File;
 
 import MG2D.geometrie.Texture;
 import MG2D.Couleur;
@@ -27,8 +28,26 @@ public class Pointeur {
 	    //System.out.println(Graphique.tableau[getValue()].getChemin());
 	    try {
 		Graphique.stopMusiqueFond();
-		Process process = Runtime.getRuntime().exec("./"+Graphique.tableau[getValue()].getNom()+".sh");
-		process.waitFor();		//ajouté afin d'attendre la fin de l'exécution du jeu pour reprendre le contrôle sur le menu
+		Bouton b = Graphique.tableau[getValue()];
+		String chemin = b.getChemin();
+		String nom = b.getNom();
+		String[] scripts = {nom+".sh", "start.sh", "launch.sh", "launcher.sh"};
+
+		for(String script : scripts){
+		    File f = new File(chemin+"/"+script);
+		    if(f.exists()){
+			File venv = new File(chemin+"/venv");
+			Process process;
+			if(venv.exists()){
+			    String[] cmd = {"/bin/bash", "-c", "source " + chemin + "/venv/bin/activate && " + chemin + "/" + script};
+			    process = Runtime.getRuntime().exec(cmd);
+			} else {
+			    process = Runtime.getRuntime().exec(chemin+"/"+script);
+			}
+			process.waitFor();		//ajouté afin d'attendre la fin de l'exécution du jeu pour reprendre le contrôle sur le menu
+			break;
+		    }
+		}
 		Graphique.lectureMusiqueFond();
 	    } catch (IOException e) {
 		// TODO Auto-generated catch block
