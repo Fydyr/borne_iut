@@ -1,36 +1,29 @@
---------------------------------------------------------------------------------
---               Batched Yield-Safe Signal Implementation                     --
--- This is a Signal class which has effectively identical behavior to a       --
--- normal RBXScriptSignal, with the only difference being a couple extra      --
--- stack frames at the bottom of the stack trace when an error is thrown.     --
--- This implementation caches runner coroutines, so the ability to yield in   --
--- the signal handlers comes at minimal extra cost over a naive signal        --
--- implementation that either always or never spawns a thread.                --
---                                                                            --
--- API:                                                                       --
---   local Signal = require(THIS MODULE)                                      --
---   local sig = Signal.new()                                                 --
---   local connection = sig:Connect(function(arg1, arg2, ...) ... end)        --
---   sig:Fire(arg1, arg2, ...)                                                --
---   connection:Disconnect()                                                  --
---   sig:DisconnectAll()                                                      --
---   local arg1, arg2, ... = sig:Wait()                                       --
---                                                                            --
--- Licence:                                                                   --
---   Licenced under the MIT licence.                                          --
---                                                                            --
--- Authors:                                                                   --
---   stravant - July 31st, 2021 - Created the file.                           --
---------------------------------------------------------------------------------
+--- @file Signal.lua
+--- Batched Yield-Safe Signal Implementation.
+--- Cette classe Signal a un comportement identique à un RBXScriptSignal normal,
+--- à la différence de quelques frames supplémentaires en bas de la pile lors d'une erreur.
+--- Cette implémentation met en cache les coroutines runner, permettant le yield dans les
+--- handlers avec un surcoût minimal.
+---
+--- API:
+---   local Signal = require(THIS MODULE)
+---   local sig = Signal.new()
+---   local connection = sig:Connect(function(arg1, arg2, ...) ... end)
+---   sig:Fire(arg1, arg2, ...)
+---   connection:Disconnect()
+---   sig:DisconnectAll()
+---   local arg1, arg2, ... = sig:Wait()
+---
+--- @license MIT
+--- @author stravant - July 31st, 2021
 
--- The currently idle thread to run the next handler on
+--- Le thread inactif courant sur lequel exécuter le prochain handler.
 local freeRunnerThread = nil
 
--- Function which acquires the currently idle handler runner thread, runs the
--- function fn on it, and then releases the thread, returning it to being the
--- currently idle one.
--- If there was a currently idle runner thread already, that's okay, that old
--- one will just get thrown and eventually GCed.
+--- Acquiert le thread runner inactif courant, exécute la fonction fn dessus,
+--- puis libère le thread pour qu'il redevienne le thread inactif courant.
+--- Si un thread runner inactif existait déjà, il sera abandonné et collecté par le GC.
+--- @param fn function La fonction à exécuter
 local function acquireRunnerThreadAndCallEventHandler(fn, ...)
 	local acquiredRunnerThread = freeRunnerThread
 	freeRunnerThread = nil
@@ -39,9 +32,8 @@ local function acquireRunnerThreadAndCallEventHandler(fn, ...)
 	freeRunnerThread = acquiredRunnerThread
 end
 
--- Coroutine runner that we create coroutines of. The coroutine can be 
--- repeatedly resumed with functions to run followed by the argument to run
--- them with.
+--- Runner de coroutine dont on crée des coroutines. La coroutine peut être
+--- reprise plusieurs fois avec les fonctions à exécuter suivies de leurs arguments.
 local function runEventHandlerInFreeThread(...)
 	acquireRunnerThreadAndCallEventHandler(...)
 	while true do
@@ -114,16 +106,16 @@ function Signal:Connect(fn)
 	return connection
 end
 
--- Disconnect all handlers. Since we use a linked list it suffices to clear the
--- reference to the head handler.
+--- Déconnecte tous les handlers. Comme une liste chaînée est utilisée,
+--- il suffit de supprimer la référence au handler de tête.
 function Signal:DisconnectAll()
 	self._handlerListHead = false
 end
 
--- Signal:Fire(...) implemented by running the handler functions on the
--- coRunnerThread, and any time the resulting thread yielded without returning
--- to us, that means that it yielded to the Roblox scheduler and has been taken
--- over by Roblox scheduling, meaning we have to make a new coroutine runner.
+--- Déclenche le signal en exécutant les fonctions handler sur le coRunnerThread.
+--- Si le thread résultant yield sans revenir, cela signifie qu'il a cédé la main
+--- au scheduler et qu'il faut créer un nouveau runner de coroutine.
+--- @param ... any Les arguments à passer aux handlers
 function Signal:Fire(...)
 	local item = self._handlerListHead
 	while item do
