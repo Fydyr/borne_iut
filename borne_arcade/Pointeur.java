@@ -44,6 +44,7 @@ public class Pointeur {
 
 			ProcessBuilder pb = new ProcessBuilder("/bin/bash", script);
 			pb.directory(wd);
+			pb.inheritIO();
 
 			if(venv.exists()){
 				Map<String, String> env = pb.environment();
@@ -53,7 +54,9 @@ public class Pointeur {
 				env.put("VIRTUAL_ENV", venvPath);
 				env.remove("PYTHONHOME");
 				env.put("SDL_AUDIODRIVER", "pulseaudio");
+				env.put("PYTHONDONTWRITEBYTECODE", "1");
 			}
+			System.gc();
 			process = pb.start();
 			process.waitFor();		//ajouté afin d'attendre la fin de l'exécution du jeu pour reprendre le contrôle sur le menu
 			break;
