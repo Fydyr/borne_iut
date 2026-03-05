@@ -38,11 +38,13 @@ public class Pointeur {
 		    if(f.exists()){
 			File venv = new File(chemin+"/venv");
 			Process process;
+			File wd = new File(chemin);
 			if(venv.exists()){
-			    String[] cmd = {"/bin/bash", "-c", "source " + chemin + "/venv/bin/activate && " + chemin + "/" + script};
-			    process = Runtime.getRuntime().exec(cmd);
+			    String[] cmd = {"/bin/bash", "-c", "source venv/bin/activate && /bin/bash \"" + script + "\""};
+			    process = Runtime.getRuntime().exec(cmd, null, wd);
 			} else {
-			    process = Runtime.getRuntime().exec(chemin+"/"+script);
+			    String[] cmd = {"/bin/bash", script};
+			    process = Runtime.getRuntime().exec(cmd, null, wd);
 			}
 			process.waitFor();		//ajouté afin d'attendre la fin de l'exécution du jeu pour reprendre le contrôle sur le menu
 			break;
