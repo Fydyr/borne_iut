@@ -1,6 +1,11 @@
 #!/bin/bash
 
-setxkbmap borne
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+if setxkbmap -I"$SCRIPT_DIR" borne -print | xkbcomp -I"$SCRIPT_DIR" - "$DISPLAY" 2>/dev/null; then
+    echo "Mapping des touches appliqué avec succès"
+else
+    echo "Erreur lors du mapping des touches"
+fi
 
 if [ -d "$HOME/git/MG2D" ]; then
    echo "Fichier git MG2D present dans le dossier home de l'utilisateur"
