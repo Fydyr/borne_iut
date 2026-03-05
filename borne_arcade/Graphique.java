@@ -280,4 +280,8 @@ public class Graphique {
 	public static void afficherTexte(int valeur){
 		f.ajouter(tableau[valeur].getTexte());
 	}
+
+	public static void setVisible(boolean visible){
+		f.setVisible(visible);
+	}
 }

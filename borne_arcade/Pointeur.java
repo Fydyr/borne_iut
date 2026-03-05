@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.File;
+import java.util.Map;
 
 import MG2D.geometrie.Texture;
 import MG2D.Couleur;
@@ -28,6 +29,7 @@ public class Pointeur {
 	    //System.out.println(Graphique.tableau[getValue()].getChemin());
 	    try {
 		Graphique.stopMusiqueFond();
+		Graphique.setVisible(false);
 		Bouton b = Graphique.tableau[getValue()];
 		String chemin = b.getChemin();
 		String nom = b.getNom();
@@ -39,23 +41,33 @@ public class Pointeur {
 			File venv = new File(chemin+"/venv");
 			Process process;
 			File wd = new File(chemin);
+
+			ProcessBuilder pb = new ProcessBuilder("/bin/bash", script);
+			pb.directory(wd);
+
 			if(venv.exists()){
-			    String[] cmd = {"/bin/bash", "-c", "source venv/bin/activate && /bin/bash \"" + script + "\""};
-			    process = Runtime.getRuntime().exec(cmd, null, wd);
-			} else {
-			    String[] cmd = {"/bin/bash", script};
-			    process = Runtime.getRuntime().exec(cmd, null, wd);
+				Map<String, String> env = pb.environment();
+				String venvPath = venv.getAbsolutePath();
+				String path = env.get("PATH");
+				env.put("PATH", venvPath + "/bin" + File.pathSeparator + (path == null ? "" : path));
+				env.put("VIRTUAL_ENV", venvPath);
+				env.remove("PYTHONHOME");
+				env.put("SDL_AUDIODRIVER", "pulseaudio");
 			}
+			process = pb.start();
 			process.waitFor();		//ajouté afin d'attendre la fin de l'exécution du jeu pour reprendre le contrôle sur le menu
 			break;
 		    }
 		}
+		Graphique.setVisible(true);
 		Graphique.lectureMusiqueFond();
 	    } catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		Graphique.setVisible(true);
 	    } catch(Exception e){	//on catche toutes les exceptions, nécessaire pour le waitFor()
 			e.printStackTrace();
+			Graphique.setVisible(true);
 		}
 
 	    //System.out.println("le process sur "+Graphique.tableau[getValue()].getChemin()+" est bien lancé");
