@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.util.ArrayList;
 
 import MG2D.geometrie.*;
 import MG2D.geometrie.Point;
@@ -188,6 +189,10 @@ public class Graphique {
 				if(bs.selection(clavier)){
 				bi.setImage(tableau[pointeur.getValue()].getChemin());
 
+				if(clavier.getBoutonJ1YTape()){
+				    menuScripts(tableau[pointeur.getValue()]);
+				}
+
 				fontSelect = null;
 				try{
 				File in = new File("fonts/PrStart.ttf");
@@ -266,6 +271,69 @@ public class Graphique {
 			}
 			f.rafraichir();
 		}//fin while true
+    }
+
+    public void menuScripts(Bouton jeu){
+	String chemin = jeu.getChemin();
+	File dir = new File(chemin);
+	File[] files = dir.listFiles(new java.io.FilenameFilter() {
+	    public boolean accept(File dir, String name) {
+		return name.endsWith(".sh");
+	    }
+	});
+
+	if(files == null || files.length == 0) return;
+
+	Texture fondBlancTransparent = new Texture("./img/blancTransparent.png", new Point(0,0));
+	Rectangle fondMenu = new Rectangle(Couleur.BLANC, new Point(340, 300), new Point(940, 800), true);
+	Texte titre = new Texte(Couleur.NOIR, "SCRIPTS", font, new Point(640, 750));
+	
+	f.ajouter(fondBlancTransparent);
+	f.ajouter(fondMenu);
+	f.ajouter(titre);
+
+	ArrayList<Texte> listeTextes = new ArrayList<Texte>();
+	for(int i=0; i<files.length; i++){
+	    Texte t = new Texte(Couleur.NOIR, files[i].getName(), font.deriveFont(20.0f), new Point(640, 700 - i*40));
+	    listeTextes.add(t);
+	    f.ajouter(t);
+	}
+
+	Texture selecteur = new Texture("img/star.png", new Point(360, 690), 30, 30);
+	f.ajouter(selecteur);
+
+	int index = 0;
+	boolean exit = false;
+
+	while(!exit){
+	    try{ Thread.sleep(50); }catch(Exception e){}
+
+	    selecteur.setA(new Point(360, 690 - index*40));
+
+	    if(clavier.getJoyJ1BasTape()){
+		if(index < files.length - 1) index++;
+	    }
+	    if(clavier.getJoyJ1HautTape()){
+		if(index > 0) index--;
+	    }
+	    if(clavier.getBoutonJ1ATape()){
+		pointeur.lancerScript(files[index]);
+		exit = true;
+	    }
+	    if(clavier.getBoutonJ1ZTape() || clavier.getBoutonJ1YTape()){
+		exit = true;
+	    }
+	    
+	    f.rafraichir();
+	}
+
+	f.supprimer(fondBlancTransparent);
+	f.supprimer(fondMenu);
+	f.supprimer(titre);
+	f.supprimer(selecteur);
+	for(Texte t : listeTextes){
+	    f.supprimer(t);
+	}
     }
     
     public static void lectureMusiqueFond() {
