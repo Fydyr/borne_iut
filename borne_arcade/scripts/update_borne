@@ -1,0 +1,4 @@
+#!/bin/bash
+git fetch
+git pull
+exec ./update_all_submodule_projects
