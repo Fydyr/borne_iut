@@ -41,7 +41,7 @@ if [ -n "$DEPENDENCIES" ]; then
                        python3 -m venv ./venv
                    fi
                    # always (re)install requirements to ensure deps are up to date
-                   ./venv/bin/pip install -r requirements.txt
+                   ./venv/bin/pip3 install -r requirements.txt
                fi
            else
                echo "Pas de fichiers Java ou python dans "$i", compilation ignorée"

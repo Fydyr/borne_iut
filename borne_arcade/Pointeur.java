@@ -23,6 +23,27 @@ public class Pointeur {
 	this.value = Graphique.tableau.length-1;
     }
 
+    public void lancerScript(File script){
+	try {
+	    Graphique.stopMusiqueFond();
+	    Graphique.setVisible(false);
+	    File wd = script.getParentFile();
+	    ProcessBuilder pb = new ProcessBuilder("/bin/bash", script.getName());
+	    pb.directory(wd);
+	    pb.inheritIO();
+	    System.gc();
+	    Process process = pb.start();
+	    process.waitFor();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	} finally {
+	    Graphique.setVisible(true);
+	    Graphique.lectureMusiqueFond();
+	}
+    }
+
     public void lancerJeu(ClavierBorneArcade clavier){
 	if(clavier.getBoutonJ1ATape()){
 
