@@ -189,7 +189,7 @@ public class Graphique {
 				if(bs.selection(clavier)){
 				bi.setImage(tableau[pointeur.getValue()].getChemin());
 
-				if(clavier.getBoutonJ1YTape()){
+				if(clavier.getBoutonJ1BTape()){
 				    menuScripts(tableau[pointeur.getValue()]);
 				}
 
